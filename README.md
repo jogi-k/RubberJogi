@@ -1,33 +1,45 @@
 # RubberJogi
 
+## What is the idea / the usecase ?
 
-An arduino connected with its serial line (not USB-Serial) to a USB2RSR232-converter.  
-* The Arduino is a USB-HID-Keyboard
-* on the serial line you can send RubberDucky - Script - Syntax
-* This is converted to USB-HID to the connected PC.
-
-
-## The idea
-
-* You want to control a PC from another PC.
-* Even down to the BIOS 
-* ssh etc not an option
+* You want to control a PC from another PC, making keystrokes, eventually mouse-moves.
+* Even when starting up and e.g. entering the BIOS 
+* => ssh etc not an option
 * you need to be independant from any "client" on the controlled machine
-* only solution is USB HID
-* Therefore you connect from PC I with USB-Serial to PC II as USB-Keyboard
+* only solution which comes to mind is USB HID
+* Therefore you connect from PC I somehow to PC II, on PC II as USB-Keyboard
 
 
-## Incredients HW
+## Solution : RubberJogi
+
++----------------+                                  +----------------+
+|                |                                  |                |
+|    PC I        |                                  |    PC II       |
+|                |          +-------------+         |                |
+|  (Controller)  |          |             |         |  (Worker)      |
+|                +----------+ RubberJogi  +-------->+                |
+|                |          |             |  USB    |                |
+|                |          +-------------+         |                |
+|                |                                  |                |
++----------------+                                  +----------------+
 
 
-* Arduino ( with USB-Keyboard capability)
-* USB2RS232-Converter 
+
+## Incredients Hardware
+
+
+* Arduino ( with USB-Keyboard capability), e.g. Leonardo, Micro, etc
+* USB-TTL UART Converter 
 * some cables
 
-## Software 
+## Incredients Software 
 
+* Unfortunately : Work in Progress , WIP
 * shall be compatible to the famous RubberDucky
 * Parser needed for that scripting language
 * based on https://github.com/Creased/arducky/blob/master/arducky.ino
+* will be extended for also sending MOUSE-Movements
+* will be extended to control two additional GPIO-Switches 
+
 
 
