@@ -9,7 +9,7 @@
  *  Receives Data on the serial1 (NOT USB-serial), parses it according to RubberDucky-Language-definition and "executes" then 
  *  on the USB-HID , keyboard and mouse.
  *  Use together with an USB TTL UART - connector to control a PC with a simulated keyboard. 
- *   *  
+ *    
  *  Thanks very much to Baptiste M. (Creased) , who created arducky ( https://github.com/Creased/arducky ) from where I have taken 90% of the base of this tool,   
  */
 
@@ -116,6 +116,8 @@ bool processLine(String line) {
      *  - SPACE
      *  - TAB
      *  - REPLAY (global commands aren't implemented)
+     *  - F1 ... F12 
+     *  - BACKSPACE ( this is not conform with RubberDucky Script but does make sense...)
      *
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
@@ -154,7 +156,20 @@ bool processLine(String line) {
             line == "PRINTSCREEN" ||
             line == "SCROLLLOCK" ||
             line == "SPACE" ||
-            line == "TAB"
+            line == "TAB" || 
+            line == "F1" || 
+            line == "F2" || 
+            line == "F3" || 
+            line == "F4" || 
+            line == "F5" || 
+            line == "F6" || 
+            line == "F7" || 
+            line == "F8" || 
+            line == "F9" || 
+            line == "F10" || 
+            line == "F11" || 
+            line == "F12" ||
+            line == "BACKSPACE"  
         ) {
             command = line;
         }
