@@ -48,4 +48,16 @@
 * will be extended to control two additional GPIO-Switches 
 
 
+## Special Hardware with 2 switches
+
+* we also need to control two switches
+* one of these is connected to the reset-button of the PC
+* the other one is connected to the switch of a USB-sharing station, so we can switch a USB-stick between PC1 and PC2 ...
+* more explanations will follow (including code)
+* here at least are the schematics
+
+  ![RubberJogi_with_switch_bb](pics/RubberJogi_with_switch_bb.png)
+
+  ![RubberJogi_with_switch_schem](pics/RubberJogi_with_switch_schem.png)
+
 
