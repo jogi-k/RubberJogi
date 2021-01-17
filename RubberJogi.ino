@@ -19,8 +19,9 @@
 #include <Mouse.h>
 
 /**
- * Variables
+ * Defines for KEYs missing in arduinos Keyboard.h
  **/
+ 
 #define KEY_MENU          0xED
 #define KEY_PAUSE         0xD0
 #define KEY_NUMLOCK       0xDB
@@ -29,40 +30,50 @@
 #define KEY_SPACE         0xB4
 #define KEY_BACKSPACE     0xB2
 
+// void processKeyCommand(String command);
+
 String action = "";
 boolean complete = false;
+int Screen_X = 1920;
+int Screen_Y = 1080;
+
+int relais = 2;
+int aten = 4;
+
 
 
 void setup() {
-  Serial1.begin(9600);
-  Serial1.print("Hi from RubberJogi"); 
-  Keyboard.begin();
-  delay( 2000 );
-//Keyboard.print("Hello from RubberJogi");
-  // reserve 100 bytes for the inputString, attention, this might need to be improved? Need to check String-Class
-  action.reserve(100);
+    
+    Serial1.begin(9600);
+    Serial1.print("Hi from RubberJogi"); 
+    Keyboard.begin();
+    delay( 2000 );
+    // reserve 100 bytes for the inputString, attention, this might need to be improved? Need to check String-Class
+    action.reserve(100);
+    pinMode(relais, OUTPUT);
+    digitalWrite(relais, LOW);
+    pinMode(aten, OUTPUT);
+    digitalWrite(aten, LOW);
 
 }
 
 
 void loop() {
-
-  serial1Event();
-
-  // complete is set by serial1Event, when a complete line has been read
-  if (complete) {
-
-    Serial1.print("Action: ");
-    Serial1.println(action);
-    if ( processLine(action) ) {
-        Serial1.println("Done");
+    
+    serial1Event();
+    // complete is set by serial1Event, when a complete line has been read
+    if (complete) {
+        Serial1.print("Action: ");
+        Serial1.println(action);
+        if ( processLine(action) ) {
+            Serial1.println("Done");
+        }
+        else{
+            Serial1.println("n/a");     
+        }
+        action = "";
+        complete = false;
     }
-    else{
-      Serial1.println("n/a");     
-    }
-    action = "";
-    complete = false;
-  }
 }
 
 /*
@@ -72,20 +83,21 @@ void loop() {
  response.  Multiple bytes of data may be available.
  */
 void serial1Event() {
-  while (Serial1.available()) {
+    
+    while (Serial1.available()) {
 
-    // get the new byte:
-    char inChar = (char)Serial1.read();
+        // get the new byte:
+        char inChar = (char)Serial1.read();
 
-    // if the incoming character is a newline, set a flag
-    // so the main loop can do something about it:
-    if (inChar == '\n') {
-      complete = true;
-    } else {
-      // add it to the inputString:
-      action += inChar;
+        // if the incoming character is a newline, set a flag
+        // so the main loop can do something about it:
+        if (inChar == '\n') {
+            complete = true;
+        } else {
+            // add it to the inputString:
+            action += inChar;
+        }
     }
-  }
 }
 
 
@@ -117,7 +129,13 @@ bool processLine(String line) {
      *  - TAB
      *  - REPLAY (global commands aren't implemented)
      *  - F1 ... F12 
-     *  - BACKSPACE ( this is not conform with RubberDucky Script but does make sense...)
+     *  (1a) Commands for Keyboard, not originally in RubberDucky Script
+     *  - BACKSPACE 
+     *  (1b) MOUSE relevant stuff, which is an generic extension to the original RubberDucky language
+     *  MOUSE_LCLICK
+     *  MOUSE_MCLICK
+     *  MOUSE_RCLICK
+     *  MOUSE_ORIGINATE   (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE )
      *
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
@@ -130,97 +148,158 @@ bool processLine(String line) {
      *  - REM (+string)
      *
      */
-
+    bool mouse;
     int space = line.indexOf(' ');  // Find the first 'space' that'll be used to separate the payload from the command
     String command = "";
     String payload = "";
 
     if (space == -1) {  // There is no space -> (1)
-        if (
-            line == "ENTER" ||
-            line == "MENU" || line == "APP" |
-            line == "DOWNARROW" || line == "DOWN" ||
-            line == "LEFTARROW" || line == "LEFT" ||
-            line == "RIGHTARROW" || line == "RIGHT" ||
-            line == "UPARROW" || line == "UP" ||
-            line == "BREAK" || line == "PAUSE" ||
-            line == "CAPSLOCK" ||
-            line == "DELETE" ||
-            line == "END" ||
-            line == "ESC" || line == "ESCAPE" ||
-            line == "HOME" ||
-            line == "INSERT" ||
-            line == "NUMLOCK" ||
-            line == "PAGEUP" ||
-            line == "PAGEDOWN" ||
-            line == "PRINTSCREEN" ||
-            line == "SCROLLLOCK" ||
-            line == "SPACE" ||
-            line == "TAB" || 
-            line == "F1" || 
-            line == "F2" || 
-            line == "F3" || 
-            line == "F4" || 
-            line == "F5" || 
-            line == "F6" || 
-            line == "F7" || 
-            line == "F8" || 
-            line == "F9" || 
-            line == "F10" || 
-            line == "F11" || 
-            line == "F12" ||
-            line == "BACKSPACE"  
-        ) {
+        if (        line == "ENTER" ||
+                    line == "MENU" || line == "APP" |
+                    line == "DOWNARROW" || line == "DOWN" ||
+                    line == "LEFTARROW" || line == "LEFT" ||
+                    line == "RIGHTARROW" || line == "RIGHT" ||
+                    line == "UPARROW" || line == "UP" ||
+                    line == "BREAK" || line == "PAUSE" ||
+                    line == "CAPSLOCK" ||
+                    line == "DELETE" ||
+                    line == "END" ||
+                    line == "ESC" || line == "ESCAPE" ||
+                    line == "HOME" ||
+                    line == "INSERT" ||
+                    line == "NUMLOCK" ||
+                    line == "PAGEUP" ||
+                    line == "PAGEDOWN" ||
+                    line == "PRINTSCREEN" ||
+                    line == "SCROLLLOCK" ||
+                    line == "SPACE" ||
+                    line == "TAB" || 
+                    line == "F1" || 
+                    line == "F2" || 
+                    line == "F3" || 
+                    line == "F4" || 
+                    line == "F5" || 
+                    line == "F6" || 
+                    line == "F7" || 
+                    line == "F8" || 
+                    line == "F9" || 
+                    line == "F10" || 
+                    line == "F11" || 
+                    line == "F12" ||
+                    line == "BACKSPACE"  ) {
             command = line;
+            mouse = false;
+        }
+        else if(    line == "MOUSE_LCLICK" ||
+                    line == "MOUSE_RCLICK" ||
+                    line == "MOUSE_MCLICK" ||
+                    line == "MOUSE_CENTER" ||
+                    line == "MOUSE_ORIGIN" ) {
+            command = line;
+            mouse = true;    
         }
     } else {  // Has a space -> (2)
         command = line.substring(0, space);   // Get chars in line from start to space position
         payload = line.substring(space + 1);  // Get chars in line from after space position to EOL
-
         if (
-            command == "DELAY" ||
-            command == "STRING" ||
-            command == "GUI" || command == "WINDOWS" ||
-            command == "SHIFT" ||
-            command == "ALT" ||
-            command == "CTRL" || command == "CONTROL" ||
-            command == "REM"
-         ) { } else {
+                    command == "DELAY" ||
+                    command == "STRING" ||
+                    command == "GUI" || command == "WINDOWS" ||
+                    command == "SHIFT" ||
+                    command == "ALT" ||
+                    command == "CTRL" || command == "CONTROL" ||
+                    command == "REM"  ) { 
+            // payload and command already set
+         } else {
             // Invalid command
             command = "";
             payload = "";
+            mouse = false;
          }
     }
-
-    if (payload == "" && command != "") {                       // Command from (1)
-        processCommand(command);                                // Process command
-    } else if (command == "DELAY") {                            // Delay before the next commande
-        delay((int) payload.toInt());                           // Convert payload to integer and make pause for 'payload' time
-    } else if (command == "STRING") {                           // String processing
-        Keyboard.print(payload);                                // Type-in the payload
-    } else if (command == "REM") {                              // Comment
-    } else if (command != "") {                                 // Command from (2)
-        String remaining = line;                                // Prepare commands to run
-        while (remaining.length() > 0) {                        // For command in remaining commands
-            int space = remaining.indexOf(' ');                 // Find the first 'space' that'll be used to separate commands
-            if (space != -1) {                                  // If this isn't the last command
-                processCommand(remaining.substring(0, space));  // Process command
-                remaining = remaining.substring(space + 1);     // Pop command from remaining commands
-            } else {                                            // If this is the last command
-                processCommand(remaining);                      // Pop command from remaining commands
-                remaining = "";                                 // Clear commands (end of loop)
+    if ( mouse ){
+        processMouseCommand( command ) ; 
+    } else {  // keyboard and default RubberDucky-CMDs
+        if (payload == "" && command != "") {                     // Command from (1)
+            processKeyCommand(command);                                // Process command
+        } else if (command == "DELAY") {                          // Delay before the next commande
+            delay((int) payload.toInt());                           // Convert payload to integer and make pause for 'payload' time
+        } else if (command == "STRING") {                         // String processing
+            Keyboard.print(payload);                               // Type-in the payload
+        } else if (command == "REM") {                            // Comment,
+            // do nothing ...           
+        } else if (command != "") {                               // Command from (2)
+            String remaining = line;                                // Prepare commands to run
+            while (remaining.length() > 0) {                        // For command in remaining commands
+                int space = remaining.indexOf(' ');                 // Find the first 'space' that'll be used to separate commands
+                if (space != -1) {                                  // If this isn't the last command
+                    processKeyCommand(remaining.substring(0, space));  // Process command
+                    remaining = remaining.substring(space + 1);     // Pop command from remaining commands
+                } else {                                            // If this is the last command
+                    processKeyCommand(remaining);                      // Pop command from remaining commands
+                    remaining = "";                                 // Clear commands (end of loop)
+                }
             }
-        }
-    } else {
-        // invalid command
-        return false;
+        } else {
+            // invalid command
+            return false;
+        }  
+        Keyboard.releaseAll();
+        return true;
     }
-
-    Keyboard.releaseAll();
-    return true;
 }
 
-void processCommand(String command) {
+void MyMouseMove( int xVal, int yVal ){
+    if( xVal > 0 ){
+        while( xVal > 100 ) {
+            Mouse.move( 100, 0, 0);  
+            xVal -= 100;
+        }
+        Mouse.move( xVal, 0, 0);
+    }
+    else if ( xVal < 0 ){
+        while( xVal < -100 ){
+            Mouse.move( -100, 0, 0);
+            xVal += 100;
+        }
+        Mouse.move( xVal, 0, 0);
+    }
+    if( yVal > 0 ){
+        while( yVal > 100 ) {
+            Mouse.move( 0, 100, 0);  
+            yVal -= 100;
+        }
+        Mouse.move( 0, yVal, 0);
+    }
+    else if ( yVal < 0 ){
+        while( yVal < -100 ){
+            Mouse.move( 0, -100, 0);
+            yVal += 100;
+        }
+        Mouse.move( 0, yVal, 0);
+    }
+}
+
+void processMouseCommand(String command) {
+    /*
+     * Process commands by executing the Mouse-Functions of Arduino
+     * (see https://www.arduino.cc/reference/en/language/functions/usb/mouse/ 
+     */
+    Mouse.begin();
+    if (command == "MOUSE_LCLICK" ) {     // Process key (used for example for WIN L command)
+        Mouse.click(MOUSE_LEFT);
+    } else if (command == "MOUSE_RCLICK") {
+        Mouse.click(MOUSE_RIGHT);
+    } else if (command == "MOUSE_MCLICK" ) {
+        Mouse.click(MOUSE_MIDDLE);
+    } else if (command == "MOUSE_ORIGIN" ) {
+        MyMouseMove( -Screen_X, -Screen_Y );  
+    } else if (command == "MOUSE_CENTER" ) {
+       switch_aten(1500);  // switch aten-switch
+    } 
+}
+
+void processKeyCommand(String command) {
     /*
      * Process commands by pressing corresponding key
      * (see https://www.arduino.cc/en/Reference/KeyboardModifiers or
@@ -305,4 +384,10 @@ void processCommand(String command) {
     } else if (command == "F12" || command == "FUNCTION12") {
         Keyboard.press(KEY_F12);
     }
+}
+
+void switch_aten(int duration){
+  digitalWrite(aten, HIGH);
+  delay(duration);
+  digitalWrite(aten, LOW);
 }
