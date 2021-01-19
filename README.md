@@ -17,12 +17,27 @@
     |    PC I        |                                  |    PC II       |
     |                |          +-------------+         |                |
     |  (Controller)  |          |             |         |  (Worker)      |
-    |                +----------+ RubberJogi  +-------->+                |
+    |                +--------->+ RubberJogi  +-------->+                |
     |                |          |             |  USB    |                |
     |                |          +-------------+         |                |
     |                |                                  |                |
     +----------------+                                  +----------------+
 
+to be more concrete:
+
+    +----------------+                                  +----------------+
+    |                |                                  |                |
+    |    PC I        |                                  |    PC II       |
+    |                |          +-------------+         |                |
+    |  (Controller)  | USB      |             |  USB    |  (Worker)      |
+    |                +--------->+ RubberJogi  +-------->+                |
+    |                | serial   |             |  HID    |                |
+    |                |          +-------------+         |                |
+    |                |                                  |                |
+    +----------------+                                  +----------------+
+
+* PC I connects to RubberJogi via USB-Serial
+* RubberJogi injects Keystrokes etc via USB HID to PC II 
 
 
 ## Incredients Hardware
