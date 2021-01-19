@@ -18,6 +18,9 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
+#define VERSION "1.0"  
+#define WITH_SWITCHES
+
 /**
  * Defines for KEYs missing in arduinos Keyboard.h
  **/
@@ -37,24 +40,30 @@ boolean complete = false;
 int Screen_X = 1920;
 int Screen_Y = 1080;
 
+#ifdef WITH_SWITCHES
 int relais = 2;
 int aten = 4;
-
+#endif
 
 
 void setup() {
     
     Serial1.begin(9600);
-    Serial1.print("Hi from RubberJogi"); 
+    Serial1.print("RubberJogi V");
+    Serial1.println(VERSION);
+#ifdef WITH_SWITCHES
+    Serial1.println("w BOOT/ATEN-Support");
+#endif     
     Keyboard.begin();
     delay( 2000 );
     // reserve 100 bytes for the inputString, attention, this might need to be improved? Need to check String-Class
     action.reserve(100);
+#ifdef WITH_SWITCHES
     pinMode(relais, OUTPUT);
     digitalWrite(relais, LOW);
     pinMode(aten, OUTPUT);
     digitalWrite(aten, LOW);
-
+#endif
 }
 
 
@@ -109,6 +118,7 @@ bool processLine(String line) {
      * (1) Commands without payload:
      *  - ENTER
      *  - MENU <=> APP
+     *  - GUI <=> WINDOWS (without payload also possible!)
      *  - DOWNARROW <=> DOWN
      *  - LEFTARROW <=> LEFT
      *  - RIGHTARROW <=> RIGHT
@@ -129,14 +139,24 @@ bool processLine(String line) {
      *  - TAB
      *  - REPLAY (global commands aren't implemented)
      *  - F1 ... F12 
+     *  
      *  (1a) Commands for Keyboard, not originally in RubberDucky Script
      *  - BACKSPACE 
+     *  
      *  (1b) MOUSE relevant stuff, which is an generic extension to the original RubberDucky language
      *  MOUSE_LCLICK
      *  MOUSE_MCLICK
      *  MOUSE_RCLICK
-     *  MOUSE_ORIGINATE   (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE )
-     *
+     *  MOUSE_ORIGINATE   (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
+     *  
+     *  (1c) Own commands for the two Optocoupler-Switches, backwards-compatible with old strings
+     *  boot
+     *  reboot
+     *  aten
+     *  (1d) Own commands for the two Optocoupler-Switches, NEW 
+     *  SWITCH1 not yet implemented ... 
+     *  SWITCH2 not yet implemented ... 
+     *  
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
      *  - DELAY (+int)
@@ -149,6 +169,7 @@ bool processLine(String line) {
      *
      */
     bool mouse;
+    bool switches;
     int space = line.indexOf(' ');  // Find the first 'space' that'll be used to separate the payload from the command
     String command = "";
     String payload = "";
@@ -156,6 +177,7 @@ bool processLine(String line) {
     if (space == -1) {  // There is no space -> (1)
         if (        line == "ENTER" ||
                     line == "MENU" || line == "APP" |
+                    line == "GUI" || line == "WINDOWS" |
                     line == "DOWNARROW" || line == "DOWN" ||
                     line == "LEFTARROW" || line == "LEFT" ||
                     line == "RIGHTARROW" || line == "RIGHT" ||
@@ -189,6 +211,7 @@ bool processLine(String line) {
                     line == "BACKSPACE"  ) {
             command = line;
             mouse = false;
+            switches = false;
         }
         else if(    line == "MOUSE_LCLICK" ||
                     line == "MOUSE_RCLICK" ||
@@ -196,7 +219,14 @@ bool processLine(String line) {
                     line == "MOUSE_CENTER" ||
                     line == "MOUSE_ORIGIN" ) {
             command = line;
+            switches = false;
             mouse = true;    
+        } else if(  line == "aten" ||
+                    line == "boot" ||
+                    line == "reboot" ) {
+            command = line;
+            mouse = false;
+            switches = true;
         }
     } else {  // Has a space -> (2)
         command = line.substring(0, space);   // Get chars in line from start to space position
@@ -215,9 +245,12 @@ bool processLine(String line) {
             command = "";
             payload = "";
             mouse = false;
+            switches = false;
          }
     }
-    if ( mouse ){
+    if ( switches ){
+        processSwitchCommands( command );
+    } else if ( mouse ){
         processMouseCommand( command ) ; 
     } else {  // keyboard and default RubberDucky-CMDs
         if (payload == "" && command != "") {                     // Command from (1)
@@ -245,8 +278,9 @@ bool processLine(String line) {
             return false;
         }  
         Keyboard.releaseAll();
-        return true;
     }
+    return true;
+
 }
 
 void MyMouseMove( int xVal, int yVal ){
@@ -295,9 +329,23 @@ void processMouseCommand(String command) {
     } else if (command == "MOUSE_ORIGIN" ) {
         MyMouseMove( -Screen_X, -Screen_Y );  
     } else if (command == "MOUSE_CENTER" ) {
-       switch_aten(1500);  // switch aten-switch
+       // 
     } 
 }
+
+
+void processSwitchCommands( String command ){
+    if (command == "aten" ) {     
+        switch_aten(1500);  // switch aten-switch
+    } else if (command == "boot") {
+        switch_reseter( 1500);
+    } else if (command == "reboot" ) {
+        switch_reseter( 10000);
+        delay( 2000);
+        switch_reseter( 1500);
+    }
+}
+
 
 void processKeyCommand(String command) {
     /*
@@ -390,4 +438,10 @@ void switch_aten(int duration){
   digitalWrite(aten, HIGH);
   delay(duration);
   digitalWrite(aten, LOW);
+}
+
+void switch_reseter(int duration) {
+  digitalWrite(relais, HIGH);
+  delay(duration);
+  digitalWrite(relais, LOW);
 }
