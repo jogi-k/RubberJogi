@@ -45,7 +45,7 @@
 ## Incredients Software 
 
 * As it is not possible to send CMD-Keys like ALT, CTRL via serial line, a language has to be used.
-* Avoid to reinvent the wheel ==> Compatible to the famous **RubberDucky**-Script-Language
+* Avoid to reinvent the wheel ==> Compatible to the famous [**RubberDucky**-Script-Language](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript)
 * ==> Based on arducky by Baptiste MOINE (Creased), THANKS!
 * Parser is based on https://github.com/Creased/arducky/blob/master/arducky.ino
 * will be extended for also sending MOUSE-Movements
