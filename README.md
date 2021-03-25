@@ -48,8 +48,20 @@
 * Avoid to reinvent the wheel ==> Compatible to the famous [**RubberDucky**-Script-Language](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript)
 * ==> Based on arducky by Baptiste MOINE (Creased), THANKS!
 * Parser is based on https://github.com/Creased/arducky/blob/master/arducky.ino
-* will be extended for also sending MOUSE-Movements
-* will be extended to control two additional GPIO-Switches 
+* is partially extended for also sending MOUSE-Movements
+* is already extended to control two additional GPIO-Switches 
+
+### Controlling 
+
+For "talking" to the RubberJogi from PC1 you need to configure your serial port to
+
+* 9600 Baud
+* 8 Bit, 1 Stop-Bit, No parity
+
+
+If you are using a linux-box you could use the follwing command to achieve this:   
+
+```stty -F /dev/ttyUSB0 cs8 9600 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts```
 
 
 ## Special Hardware with 2 switches
