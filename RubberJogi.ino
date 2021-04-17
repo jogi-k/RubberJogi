@@ -43,16 +43,18 @@ int Screen_Y = 1080;
 #ifdef WITH_SWITCHES
 int relais = 2;
 int aten = 4;
+int switch_3 = 6;
+int switch_4 = 8;
 #endif
 
 
 void setup() {
     
-    Serial1.begin(9600);
-    Serial1.print("RubberJogi V");
-    Serial1.println(VERSION);
+    Serial.begin(9600);
+    Serial.print("RubberJogi V");
+    Serial.println(VERSION);
 #ifdef WITH_SWITCHES
-    Serial1.println("w BOOT/ATEN-Support");
+    Serial.println("w BOOT/ATEN/SWITCH-Support");
 #endif     
     Keyboard.begin();
     delay( 2000 );
@@ -63,6 +65,10 @@ void setup() {
     digitalWrite(relais, LOW);
     pinMode(aten, OUTPUT);
     digitalWrite(aten, LOW);
+    pinMode(switch_3, OUTPUT);
+    digitalWrite(switch_3, LOW);
+    pinMode(switch_4, OUTPUT);
+    digitalWrite(switch_4, LOW);
 #endif
 }
 
@@ -72,13 +78,13 @@ void loop() {
     serial1Event();
     // complete is set by serial1Event, when a complete line has been read
     if (complete) {
-        Serial1.print("Action: ");
-        Serial1.println(action);
+        Serial.print("Action: ");
+        Serial.println(action);
         if ( processLine(action) ) {
-            Serial1.println("Done");
+            Serial.println("Done");
         }
         else{
-            Serial1.println("n/a");     
+            Serial.println("n/a");     
         }
         action = "";
         complete = false;
@@ -93,10 +99,10 @@ void loop() {
  */
 void serial1Event() {
     
-    while (Serial1.available()) {
+    while (Serial.available()) {
 
         // get the new byte:
-        char inChar = (char)Serial1.read();
+        char inChar = (char)Serial.read();
 
         // if the incoming character is a newline, set a flag
         // so the main loop can do something about it:
@@ -156,6 +162,8 @@ bool processLine(String line) {
      *  (1d) Own commands for the two Optocoupler-Switches, NEW 
      *  SWITCH1 not yet implemented ... 
      *  SWITCH2 not yet implemented ... 
+     *  SWITCH3 not yet implemented ... 
+     *  SWITCH4 not yet implemented ... 
      *  
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
@@ -184,7 +192,7 @@ bool processLine(String line) {
                     line == "UPARROW" || line == "UP" ||
                     line == "BREAK" || line == "PAUSE" ||
                     line == "CAPSLOCK" ||
-                    line == "DELETE" ||
+                    line == "DELETE" ||  line == "DEL" ||
                     line == "END" ||
                     line == "ESC" || line == "ESCAPE" ||
                     line == "HOME" ||
@@ -223,6 +231,14 @@ bool processLine(String line) {
             mouse = true;    
         } else if(  line == "aten" ||
                     line == "boot" ||
+                    line == "SWITCH1_ON" || 
+                    line == "SWITCH1_OFF"  ||
+                    line == "SWITCH2_ON" || 
+                    line == "SWITCH2_OFF"  ||
+                    line == "SWITCH3_ON" || 
+                    line == "SWITCH3_OFF"  ||
+                    line == "SWITCH4_ON" || 
+                    line == "SWITCH4_OFF"  ||
                     line == "reboot" ) {
             command = line;
             mouse = false;
@@ -238,7 +254,8 @@ bool processLine(String line) {
                     command == "SHIFT" ||
                     command == "ALT" ||
                     command == "CTRL" || command == "CONTROL" ||
-                    command == "REM"  ) { 
+                    command == "REM" 
+                    ) { 
             // payload and command already set
          } else {
             // Invalid command
@@ -337,6 +354,22 @@ void processMouseCommand(String command) {
 void processSwitchCommands( String command ){
     if (command == "aten" ) {     
         switch_aten(1500);  // switch aten-switch
+    } else if (command == "SWITCH1_ON") {
+        switch_Nr_1( 1 );
+    } else if (command == "SWITCH1_OFF") {
+        switch_Nr_1( 0 );
+    } else if (command == "SWITCH2_ON") {
+        switch_Nr_2( 1 );
+    } else if (command == "SWITCH2_OFF") {
+        switch_Nr_2( 0 );
+    } else if (command == "SWITCH3_ON") {
+        switch_Nr_3( 1 );
+    } else if (command == "SWITCH3_OFF") {
+        switch_Nr_3( 0 );
+    } else if (command == "SWITCH4_ON") {
+        switch_Nr_4( 1 );
+    } else if (command == "SWITCH4_OFF") {
+        switch_Nr_4( 0 );
     } else if (command == "boot") {
         switch_reseter( 1500);
     } else if (command == "reboot" ) {
@@ -444,4 +477,33 @@ void switch_reseter(int duration) {
   digitalWrite(relais, HIGH);
   delay(duration);
   digitalWrite(relais, LOW);
+}
+
+void switch_Nr_4( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_4, HIGH);
+    else
+        digitalWrite(switch_4, LOW);
+}
+void switch_Nr_3( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_3, HIGH);
+    else
+        digitalWrite(switch_3, LOW);
+}
+void switch_Nr_2( int low_high )
+{
+    if( low_high )
+        digitalWrite(aten, HIGH);
+    else
+        digitalWrite(aten, LOW);
+}
+void switch_Nr_1( int low_high )
+{
+    if( low_high )
+        digitalWrite(relais, HIGH);
+    else
+        digitalWrite(relais, LOW);
 }
