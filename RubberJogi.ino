@@ -216,29 +216,29 @@ bool processLine(String line) {
                     line == "F10" || 
                     line == "F11" || 
                     line == "F12" ||
-                    line == "BACKSPACE"  ) {
+                    line == "backspace"  ) {
             command = line;
             mouse = false;
             switches = false;
         }
-        else if(    line == "MOUSE_LCLICK" ||
-                    line == "MOUSE_RCLICK" ||
-                    line == "MOUSE_MCLICK" ||
-                    line == "MOUSE_CENTER" ||
-                    line == "MOUSE_ORIGIN" ) {
+        else if(    line == "mouse_lclick" ||
+                    line == "mouse_rclick" ||
+                    line == "mouse_mclick" ||
+                    line == "mouse_center" ||
+                    line == "mouse_origin" ) {
             command = line;
             switches = false;
             mouse = true;    
         } else if(  line == "aten" ||
                     line == "boot" ||
-                    line == "SWITCH1_ON" || 
-                    line == "SWITCH1_OFF"  ||
-                    line == "SWITCH2_ON" || 
-                    line == "SWITCH2_OFF"  ||
-                    line == "SWITCH3_ON" || 
-                    line == "SWITCH3_OFF"  ||
-                    line == "SWITCH4_ON" || 
-                    line == "SWITCH4_OFF"  ||
+                    line == "switch1_on" || 
+                    line == "switch1_off"  ||
+                    line == "switch2_on" || 
+                    line == "switch2_off"  ||
+                    line == "switch3_on" || 
+                    line == "switch3_off"  ||
+                    line == "switch4_on" || 
+                    line == "switch4_off"  ||
                     line == "reboot" ) {
             command = line;
             mouse = false;
@@ -354,21 +354,21 @@ void processMouseCommand(String command) {
 void processSwitchCommands( String command ){
     if (command == "aten" ) {     
         switch_aten(1500);  // switch aten-switch
-    } else if (command == "SWITCH1_ON") {
+    } else if (command == "switch1_on") {
         switch_Nr_1( 1 );
-    } else if (command == "SWITCH1_OFF") {
+    } else if (command == "switch1_off") {
         switch_Nr_1( 0 );
-    } else if (command == "SWITCH2_ON") {
+    } else if (command == "switch2_on") {
         switch_Nr_2( 1 );
-    } else if (command == "SWITCH2_OFF") {
+    } else if (command == "switch2_off") {
         switch_Nr_2( 0 );
-    } else if (command == "SWITCH3_ON") {
+    } else if (command == "switch3_on") {
         switch_Nr_3( 1 );
-    } else if (command == "SWITCH3_OFF") {
+    } else if (command == "switch3_off") {
         switch_Nr_3( 0 );
-    } else if (command == "SWITCH4_ON") {
+    } else if (command == "switch4_on") {
         switch_Nr_4( 1 );
-    } else if (command == "SWITCH4_OFF") {
+    } else if (command == "switch4_off") {
         switch_Nr_4( 0 );
     } else if (command == "boot") {
         switch_reseter( 1500);
