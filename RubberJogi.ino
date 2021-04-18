@@ -18,7 +18,7 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-#define VERSION "1.0"  
+#define VERSION "1.1"  
 #define WITH_SWITCHES
 
 /**
@@ -41,10 +41,10 @@ int Screen_X = 1920;
 int Screen_Y = 1080;
 
 #ifdef WITH_SWITCHES
-int relais = 2;
-int aten = 4;
-int switch_3 = 6;
-int switch_4 = 8;
+int switch_1_pin = 2;
+int switch_2_pin = 4;
+int switch_3_pin = 6;
+int switch_4_pin = 8;
 #endif
 
 
@@ -61,14 +61,14 @@ void setup() {
     // reserve 100 bytes for the inputString, attention, this might need to be improved? Need to check String-Class
     action.reserve(100);
 #ifdef WITH_SWITCHES
-    pinMode(relais, OUTPUT);
-    digitalWrite(relais, LOW);
-    pinMode(aten, OUTPUT);
-    digitalWrite(aten, LOW);
-    pinMode(switch_3, OUTPUT);
-    digitalWrite(switch_3, LOW);
-    pinMode(switch_4, OUTPUT);
-    digitalWrite(switch_4, LOW);
+    pinMode(switch_1_pin, OUTPUT);
+    digitalWrite(switch_1_pin, LOW);
+    pinMode(switch_2_pin, OUTPUT);
+    digitalWrite(switch_2_pin, LOW);
+    pinMode(switch_3_pin, OUTPUT);
+    digitalWrite(switch_3_pin, LOW);
+    pinMode(switch_4_pin, OUTPUT);
+    digitalWrite(switch_4_pin, LOW);
 #endif
 }
 
@@ -147,23 +147,23 @@ bool processLine(String line) {
      *  - F1 ... F12 
      *  
      *  (1a) Commands for Keyboard, not originally in RubberDucky Script
-     *  - BACKSPACE 
+     *  - backspace 
      *  
      *  (1b) MOUSE relevant stuff, which is an generic extension to the original RubberDucky language
-     *  MOUSE_LCLICK
-     *  MOUSE_MCLICK
-     *  MOUSE_RCLICK
-     *  MOUSE_ORIGINATE   (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
+     *  mouse_lclick
+     *  mouse_mclick
+     *  mouse_lclick
+     *  mouse_originate  (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
      *  
      *  (1c) Own commands for the two Optocoupler-Switches, backwards-compatible with old strings
      *  boot
      *  reboot
      *  aten
      *  (1d) Own commands for the two Optocoupler-Switches, NEW 
-     *  SWITCH1 not yet implemented ... 
-     *  SWITCH2 not yet implemented ... 
-     *  SWITCH3 not yet implemented ... 
-     *  SWITCH4 not yet implemented ... 
+     *  switch1_on , switch1_off 
+     *  switch2_on , switch2_off 
+     *  switch3_on , switch3_off 
+     *  switch4_on , switch4_off 
      *  
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
@@ -238,8 +238,7 @@ bool processLine(String line) {
                     line == "switch3_on" || 
                     line == "switch3_off"  ||
                     line == "switch4_on" || 
-                    line == "switch4_off"  ||
-                    line == "reboot" ) {
+                    line == "switch4_off"  ) {
             command = line;
             mouse = false;
             switches = true;
@@ -353,7 +352,7 @@ void processMouseCommand(String command) {
 
 void processSwitchCommands( String command ){
     if (command == "aten" ) {     
-        switch_aten(1500);  // switch aten-switch
+        switch_aten_pin(1500);  // switch aten-switch
     } else if (command == "switch1_on") {
         switch_Nr_1( 1 );
     } else if (command == "switch1_off") {
@@ -467,43 +466,43 @@ void processKeyCommand(String command) {
     }
 }
 
-void switch_aten(int duration){
-  digitalWrite(aten, HIGH);
+void switch_aten_pin(int duration){
+  digitalWrite(switch_2_pin, HIGH);
   delay(duration);
-  digitalWrite(aten, LOW);
+  digitalWrite(switch_2_pin, LOW);
 }
 
 void switch_reseter(int duration) {
-  digitalWrite(relais, HIGH);
+  digitalWrite(switch_1_pin, HIGH);
   delay(duration);
-  digitalWrite(relais, LOW);
+  digitalWrite(switch_1_pin, LOW);
 }
 
 void switch_Nr_4( int low_high )
 {
     if( low_high )
-        digitalWrite(switch_4, HIGH);
+        digitalWrite(switch_4_pin, HIGH);
     else
-        digitalWrite(switch_4, LOW);
+        digitalWrite(switch_4_pin, LOW);
 }
 void switch_Nr_3( int low_high )
 {
     if( low_high )
-        digitalWrite(switch_3, HIGH);
+        digitalWrite(switch_3_pin, HIGH);
     else
-        digitalWrite(switch_3, LOW);
+        digitalWrite(switch_3_pin, LOW);
 }
 void switch_Nr_2( int low_high )
 {
     if( low_high )
-        digitalWrite(aten, HIGH);
+        digitalWrite(switch_2_pin, HIGH);
     else
-        digitalWrite(aten, LOW);
+        digitalWrite(switch_2_pin, LOW);
 }
 void switch_Nr_1( int low_high )
 {
     if( low_high )
-        digitalWrite(relais, HIGH);
+        digitalWrite(switch_1_pin, HIGH);
     else
-        digitalWrite(relais, LOW);
+        digitalWrite(switch_1_pin, LOW);
 }
