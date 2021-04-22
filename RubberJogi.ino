@@ -18,7 +18,7 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-#define VERSION "1.0"  
+#define VERSION "1.1"  
 #define WITH_SWITCHES
 
 /**
@@ -35,14 +35,19 @@
 
 // void processKeyCommand(String command);
 
+
+
+
 String action = "";
 boolean complete = false;
 int Screen_X = 1920;
 int Screen_Y = 1080;
 
 #ifdef WITH_SWITCHES
-int relais = 2;
-int aten = 4;
+int switch_1_pin = 2;
+int switch_2_pin = 4;
+int switch_3_pin = 6;
+int switch_4_pin = 8;
 #endif
 
 
@@ -52,17 +57,21 @@ void setup() {
     Serial1.print("RubberJogi V");
     Serial1.println(VERSION);
 #ifdef WITH_SWITCHES
-    Serial1.println("w BOOT/ATEN-Support");
+    Serial1.println("w BOOT/ATEN/SWITCH-Support");
 #endif     
     Keyboard.begin();
     delay( 2000 );
     // reserve 100 bytes for the inputString, attention, this might need to be improved? Need to check String-Class
     action.reserve(100);
 #ifdef WITH_SWITCHES
-    pinMode(relais, OUTPUT);
-    digitalWrite(relais, LOW);
-    pinMode(aten, OUTPUT);
-    digitalWrite(aten, LOW);
+    pinMode(switch_1_pin, OUTPUT);
+    digitalWrite(switch_1_pin, LOW);
+    pinMode(switch_2_pin, OUTPUT);
+    digitalWrite(switch_2_pin, LOW);
+    pinMode(switch_3_pin, OUTPUT);
+    digitalWrite(switch_3_pin, LOW);
+    pinMode(switch_4_pin, OUTPUT);
+    digitalWrite(switch_4_pin, LOW);
 #endif
 }
 
@@ -141,21 +150,23 @@ bool processLine(String line) {
      *  - F1 ... F12 
      *  
      *  (1a) Commands for Keyboard, not originally in RubberDucky Script
-     *  - BACKSPACE 
+     *  - backspace 
      *  
      *  (1b) MOUSE relevant stuff, which is an generic extension to the original RubberDucky language
-     *  MOUSE_LCLICK
-     *  MOUSE_MCLICK
-     *  MOUSE_RCLICK
-     *  MOUSE_ORIGINATE   (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
+     *  mouse_lclick
+     *  mouse_mclick
+     *  mouse_lclick
+     *  mouse_origin  (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
      *  
      *  (1c) Own commands for the two Optocoupler-Switches, backwards-compatible with old strings
      *  boot
      *  reboot
      *  aten
      *  (1d) Own commands for the two Optocoupler-Switches, NEW 
-     *  SWITCH1 not yet implemented ... 
-     *  SWITCH2 not yet implemented ... 
+     *  switch1_on , switch1_off 
+     *  switch2_on , switch2_off 
+     *  switch3_on , switch3_off 
+     *  switch4_on , switch4_off 
      *  
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
@@ -184,7 +195,7 @@ bool processLine(String line) {
                     line == "UPARROW" || line == "UP" ||
                     line == "BREAK" || line == "PAUSE" ||
                     line == "CAPSLOCK" ||
-                    line == "DELETE" ||
+                    line == "DELETE" ||  line == "DEL" ||
                     line == "END" ||
                     line == "ESC" || line == "ESCAPE" ||
                     line == "HOME" ||
@@ -208,22 +219,30 @@ bool processLine(String line) {
                     line == "F10" || 
                     line == "F11" || 
                     line == "F12" ||
-                    line == "BACKSPACE"  ) {
+                    line == "backspace"  ) {
             command = line;
             mouse = false;
             switches = false;
         }
-        else if(    line == "MOUSE_LCLICK" ||
-                    line == "MOUSE_RCLICK" ||
-                    line == "MOUSE_MCLICK" ||
-                    line == "MOUSE_CENTER" ||
-                    line == "MOUSE_ORIGIN" ) {
+        else if(    line == "mouse_lclick" ||
+                    line == "mouse_rclick" ||
+                    line == "mouse_mclick" ||
+                    line == "mouse_center" ||
+                    line == "mouse_origin" ) {
             command = line;
             switches = false;
             mouse = true;    
         } else if(  line == "aten" ||
-                    line == "boot" ||
-                    line == "reboot" ) {
+                    line == "boot" || 
+                    line == "reboot" ||
+                    line == "switch1_on" || 
+                    line == "switch1_off"  ||
+                    line == "switch2_on" || 
+                    line == "switch2_off"  ||
+                    line == "switch3_on" || 
+                    line == "switch3_off"  ||
+                    line == "switch4_on" || 
+                    line == "switch4_off"  ) {
             command = line;
             mouse = false;
             switches = true;
@@ -238,7 +257,8 @@ bool processLine(String line) {
                     command == "SHIFT" ||
                     command == "ALT" ||
                     command == "CTRL" || command == "CONTROL" ||
-                    command == "REM"  ) { 
+                    command == "REM" 
+                    ) { 
             // payload and command already set
          } else {
             // Invalid command
@@ -320,13 +340,13 @@ void processMouseCommand(String command) {
      * (see https://www.arduino.cc/reference/en/language/functions/usb/mouse/ 
      */
     Mouse.begin();
-    if (command == "MOUSE_LCLICK" ) {     // Process key (used for example for WIN L command)
+    if (command == "mouse_lclick" ) {     // Process key (used for example for WIN L command)
         Mouse.click(MOUSE_LEFT);
-    } else if (command == "MOUSE_RCLICK") {
+    } else if (command == "mouse_rclick") {
         Mouse.click(MOUSE_RIGHT);
-    } else if (command == "MOUSE_MCLICK" ) {
+    } else if (command == "mouse_mclick" ) {
         Mouse.click(MOUSE_MIDDLE);
-    } else if (command == "MOUSE_ORIGIN" ) {
+    } else if (command == "mouse_origin" ) {
         MyMouseMove( -Screen_X, -Screen_Y );  
     } else if (command == "MOUSE_CENTER" ) {
        // 
@@ -336,7 +356,23 @@ void processMouseCommand(String command) {
 
 void processSwitchCommands( String command ){
     if (command == "aten" ) {     
-        switch_aten(1500);  // switch aten-switch
+        switch_aten_pin(1500);  // switch aten-switch
+    } else if (command == "switch1_on") {
+        switch_Nr_1( 1 );
+    } else if (command == "switch1_off") {
+        switch_Nr_1( 0 );
+    } else if (command == "switch2_on") {
+        switch_Nr_2( 1 );
+    } else if (command == "switch2_off") {
+        switch_Nr_2( 0 );
+    } else if (command == "switch3_on") {
+        switch_Nr_3( 1 );
+    } else if (command == "switch3_off") {
+        switch_Nr_3( 0 );
+    } else if (command == "switch4_on") {
+        switch_Nr_4( 1 );
+    } else if (command == "switch4_off") {
+        switch_Nr_4( 0 );
     } else if (command == "boot") {
         switch_reseter( 1500);
     } else if (command == "reboot" ) {
@@ -434,14 +470,43 @@ void processKeyCommand(String command) {
     }
 }
 
-void switch_aten(int duration){
-  digitalWrite(aten, HIGH);
+void switch_aten_pin(int duration){
+  digitalWrite(switch_2_pin, HIGH);
   delay(duration);
-  digitalWrite(aten, LOW);
+  digitalWrite(switch_2_pin, LOW);
 }
 
 void switch_reseter(int duration) {
-  digitalWrite(relais, HIGH);
+  digitalWrite(switch_1_pin, HIGH);
   delay(duration);
-  digitalWrite(relais, LOW);
+  digitalWrite(switch_1_pin, LOW);
+}
+
+void switch_Nr_4( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_4_pin, HIGH);
+    else
+        digitalWrite(switch_4_pin, LOW);
+}
+void switch_Nr_3( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_3_pin, HIGH);
+    else
+        digitalWrite(switch_3_pin, LOW);
+}
+void switch_Nr_2( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_2_pin, HIGH);
+    else
+        digitalWrite(switch_2_pin, LOW);
+}
+void switch_Nr_1( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_1_pin, HIGH);
+    else
+        digitalWrite(switch_1_pin, LOW);
 }
