@@ -53,11 +53,11 @@ int switch_4_pin = 8;
 
 void setup() {
     
-    Serial.begin(9600);
-    Serial.print("RubberJogi V");
-    Serial.println(VERSION);
+    Serial1.begin(9600);
+    Serial1.print("RubberJogi V");
+    Serial1.println(VERSION);
 #ifdef WITH_SWITCHES
-    Serial.println("w BOOT/ATEN/SWITCH-Support");
+    Serial1.println("w BOOT/ATEN/SWITCH-Support");
 #endif     
     Keyboard.begin();
     delay( 2000 );
@@ -81,13 +81,13 @@ void loop() {
     serial1Event();
     // complete is set by serial1Event, when a complete line has been read
     if (complete) {
-        Serial.print("Action: ");
-        Serial.println(action);
+        Serial1.print("Action: ");
+        Serial1.println(action);
         if ( processLine(action) ) {
-            Serial.println("Done");
+            Serial1.println("Done");
         }
         else{
-            Serial.println("n/a");     
+            Serial1.println("n/a");     
         }
         action = "";
         complete = false;
@@ -102,10 +102,10 @@ void loop() {
  */
 void serial1Event() {
     
-    while (Serial.available()) {
+    while (Serial1.available()) {
 
         // get the new byte:
-        char inChar = (char)Serial.read();
+        char inChar = (char)Serial1.read();
 
         // if the incoming character is a newline, set a flag
         // so the main loop can do something about it:
@@ -156,7 +156,7 @@ bool processLine(String line) {
      *  mouse_lclick
      *  mouse_mclick
      *  mouse_lclick
-     *  mouse_originate  (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
+     *  mouse_origin  (tries to move to 0, 0 with assumed max screen 2560x1440, can be changed with MOUSE_SETSCREENSIZE, not yet implemented ... )
      *  
      *  (1c) Own commands for the two Optocoupler-Switches, backwards-compatible with old strings
      *  boot
@@ -340,13 +340,13 @@ void processMouseCommand(String command) {
      * (see https://www.arduino.cc/reference/en/language/functions/usb/mouse/ 
      */
     Mouse.begin();
-    if (command == "MOUSE_LCLICK" ) {     // Process key (used for example for WIN L command)
+    if (command == "mouse_lclick" ) {     // Process key (used for example for WIN L command)
         Mouse.click(MOUSE_LEFT);
-    } else if (command == "MOUSE_RCLICK") {
+    } else if (command == "mouse_rclick") {
         Mouse.click(MOUSE_RIGHT);
-    } else if (command == "MOUSE_MCLICK" ) {
+    } else if (command == "mouse_mclick" ) {
         Mouse.click(MOUSE_MIDDLE);
-    } else if (command == "MOUSE_ORIGIN" ) {
+    } else if (command == "mouse_origin" ) {
         MyMouseMove( -Screen_X, -Screen_Y );  
     } else if (command == "MOUSE_CENTER" ) {
        // 
