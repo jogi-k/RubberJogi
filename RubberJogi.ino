@@ -35,6 +35,9 @@
 
 // void processKeyCommand(String command);
 
+
+
+
 String action = "";
 boolean complete = false;
 int Screen_X = 1920;
@@ -230,7 +233,8 @@ bool processLine(String line) {
             switches = false;
             mouse = true;    
         } else if(  line == "aten" ||
-                    line == "boot" ||
+                    line == "boot" || 
+                    line == "reboot" ||
                     line == "switch1_on" || 
                     line == "switch1_off"  ||
                     line == "switch2_on" || 
