@@ -1,4 +1,4 @@
-# RubberJogi
+# 	RubberJogi
 
 ## What is the idea / the usecase ?
 
@@ -66,14 +66,79 @@ If you are using a linux-box you could use the follwing command to achieve this:
 
 ## Special Hardware with 2 switches
 
-* we also need to control two switches
+* In our/my usecase we also need to control two switches
+
 * one of these is connected to the reset-button of the PC
+
 * the other one is connected to the switch of a USB-sharing station, so we can switch a USB-stick between PC1 and PC2 ...
-* more explanations will follow (including code)
+
+* more explanations will follow, the code is already able to make use of these 
+
 * here at least are the schematics
+
+* In case you want (like we do) to switch on PC2 with a command from PC1 you need to connect Vcc between FTDI and Arduino, otherwise the Arduino will not have power when he is connected to a switched of PC ... ( see the green cable below)
+
+
 
   ![RubberJogi_with_switch_bb](pics/RubberJogi_with_switch_bb.png)
 
+
+
   ![RubberJogi_with_switch_schem](pics/RubberJogi_with_switch_schem.png)
+
+
+## Extended Special Hardware with 4 switches
+
+  - in the meantime we even have use-cases where we need to control up to 4 switches
+
+  - as before one of these is connected to the reset-button of the PC (in our case)
+
+  - as before one is connected to the switch of a USB-sharing station, so we can switch a USB-stick between PC1 and PC2 ... (in our case)
+
+  - the other 2 switches are needed to control boot-sel switches of embedded ARM systems  
+
+  - here are the additional schematics
+
+  - In case you want (like we do) to switch on PC2 with a command from PC1 you need to connect Vcc between FTDI and Arduino, otherwise the Arduino will not have power when he is connected to a switched of PC ... ( see the green cable below)
+
+    ![RubberJogi_with_switch_bb](pics/RubberJogi_with_4_switches_bb.png)
+
+    ![RubberJogi_with_switch_schem](pics/RubberJogi_with_4_switches_schem.png)
+
+## Reality
+
+This is one sample-prototype without any switches, just the "plain" RubberJogi. This was soldered "flying" and is only stabilized with heat shrink tube.
+
+![RubberJogi_with_4_switches_sample](pics/RubberJogi_Aufbau_NoSwitch.jpg)
+
+
+
+This is one sample-prototype, with 4 switches, soldered on a veroboard/breadboard
+
+
+![RubberJogi_with_4_switches_sample](pics/RubberJogi_Aufbau.jpg)
+
+## Parts-List
+
+What do you need to build a RubberJogi?
+
+
+
+
+| Part                                                  | Rubber<br> Jogi<br> Standard | Rubber <br> Jogi<br>Two Switch | Rubber <br> Jogi<br>Four Switch |
+| ----------------------------------------------------- | ---------------------------- | ------------------------------ | ------------------------------- |
+| Arduino Micro                                         | 1                            | 1                              | 1                               |
+| FTDI USB / Serial Converter 5V capable                | 1                            | 1                              | 1                               |
+| Cables between Arduino/FTDI<br>(Vcc, GND, RxD, TxD)   | 4                            | 4                              | 4                               |
+| USB-Cable to Arduino <br />(USB-A to Micro-USB)       | 1                            | 1                              | 1                               |
+| USB-Cable to FTDI<br>(USB-A to Mini-USB)              | 1                            | 1                              | 1                               |
+| Veroboard                                             | ?                            | ca 60x50 mm                    | ca 60x50mm                      |
+| Header Arduino<br>(when not using already w/ headers) | ?                            | 34                             | 34                              |
+| Header FTDI                                           | ?                            | 18                             | 18                              |
+| Optocoupler 4N25 DIL                                  | 0                            | 2                              | 4                               |
+| Resistor 390 Ohm                                      | 0                            | 2                              | 4                               |
+| Connectors, depends on your needs, e.g                | 0                            | 2                              | 4                               |
+| **Example**: Headers for switches                     | 0                            | 4                              | 8                               |
+
 
 
