@@ -49,7 +49,7 @@
 * ==> Based on arducky by Baptiste MOINE (Creased), THANKS!
 * Parser is based on https://github.com/Creased/arducky/blob/master/arducky.ino
 * is partially extended for also sending MOUSE-Movements
-* is already extended to control two additional GPIO-Switches 
+* is already extended to control four additional GPIO-Switches 
 
 ### Controlling 
 
@@ -117,6 +117,17 @@ This is one sample-prototype, with 4 switches, soldered on a veroboard/breadboar
 
 
 ![RubberJogi_with_4_switches_sample](pics/RubberJogi_Aufbau.jpg)
+
+
+
+
+
+These are all 3 prototypes I have built, together on one picture. 
+
+* 2 times extended RubberJogis with 4 switches
+* 1 as a pure RubberJogi, no switches.
+
+![Different RubberJogis](pics/RubberJogi_all.jpg)
 
 ## Parts-List
 
