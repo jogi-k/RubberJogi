@@ -18,7 +18,7 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-#define VERSION "1.1"  
+#define VERSION "1.2"
 #define WITH_SWITCHES
 
 /**
@@ -431,7 +431,7 @@ void processKeyCommand(String command) {
         Keyboard.press(KEY_SCROLLLOCK);
     } else if (command == "SPACE") {
         Keyboard.press(KEY_SPACE);
-    } else if (command == "BACKSPACE") {
+    } else if (command == "backspace") {
         Keyboard.press(KEY_BACKSPACE);
     } else if (command == "TAB") {
         Keyboard.press(KEY_TAB);
