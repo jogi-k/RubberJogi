@@ -1,0 +1,17 @@
+#!/bin/bash
+stty -F /dev/ttyUSB0 cs8 9600 ignbrk -brkint -icrnl -imaxbel -opost -onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke noflsh -ixon -crtscts
+echo "switch1_on" | sudo tee /dev/ttyUSB0
+sleep 0.5
+echo "switch2_on" | sudo tee /dev/ttyUSB0
+sleep 0.5
+echo "switch3_on" | sudo tee /dev/ttyUSB0
+sleep 0.5
+echo "switch4_on" | sudo tee /dev/ttyUSB0
+sleep 1
+echo "switch1_off" | sudo tee /dev/ttyUSB0
+sleep 0.5
+echo "switch2_off" | sudo tee /dev/ttyUSB0
+sleep 0.5
+echo "switch3_off" | sudo tee /dev/ttyUSB0
+sleep 0.5
+echo "switch4_off" | sudo tee /dev/ttyUSB0
