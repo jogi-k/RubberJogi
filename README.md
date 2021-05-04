@@ -50,6 +50,17 @@
 * Parser is based on https://github.com/Creased/arducky/blob/master/arducky.ino
 * is partially extended for also sending MOUSE-Movements
 * is already extended to control four additional GPIO-Switches 
+* Accepted Commands :
+    * All RubberDucky-Commands (not really all...)
+    * ```backspace```
+    * ```switch1_on``` / ```switch1_off```  => switching Optocoupler at Pin2 
+    * ```switch2_on``` / ```switch2_off```  => switching Optocoupler at Pin4 
+    * ```switch3_on``` / ```switch3_off```  => switching Optocoupler at Pin6 
+    * ```switch4_on``` / ```switch4_off```  => switching Optocoupler at Pin8
+    * ```boot``` => switching Optocoupler at Pin2 for 1.5 sec high, then low
+    * ```reboot``` => switching Optocoupler at Pin2 for 10sec high, then low, after a delay of 2 secs then once more for 1.5 sec high, then low
+    * ```aten``` => switching Optocoupler at Pin4 for 1.5 sec high, then low
+ 
 
 ### Controlling 
 
