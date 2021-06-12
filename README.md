@@ -88,6 +88,8 @@ If you are using a linux-box you could use the follwing command to achieve this:
 * here at least are the schematics
 
 * In case you want (like we do) to switch on PC2 with a command from PC1 you need to connect Vcc between FTDI and Arduino, otherwise the Arduino will not have power when he is connected to a switched of PC ... ( see the green cable below)
+* Unfortunately, it looks like this is backfeeding 5V even to the 2nd PC via USB. This is not a problem if the PC is switched on. __BUT__ : If you have the PC switched off and want to switch it on, then - depending on the PC - it might make some trouble for the PC, as it is never __really__ switching completely off. I need to try this remedy : https://forum.arduino.cc/t/powering-the-arduino-with-a-5v-power-supply/261902/12
+ 
 
 
 
