@@ -113,6 +113,7 @@ If you are using a linux-box you could use the follwing command to achieve this:
   - here are the additional schematics
 
   - In case you want (like we do) to switch on PC2 with a command from PC1 you need to connect Vcc between FTDI and Arduino, otherwise the Arduino will not have power when he is connected to a switched of PC ... ( see the green cable below)
+  - backfeeding 5V via USB to PC2: see above at the 2-Switch-Solution)
 
     ![RubberJogi_with_switch_bb](pics/RubberJogi_with_4_switches_bb.png)
 
