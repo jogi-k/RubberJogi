@@ -166,4 +166,8 @@ What do you need to build a RubberJogi?
 | **Example**: Headers for switches                     | 0                            | 4                              | 8                               |
 
 
+## Links, Ideas
+
+* Mouse-Support currently missing to 90%, positioning does not work. Maybe move to USB-Touch-Screen could solve the problem? Please have a look at this project, might be worth checking out : https://github.com/NicoHood/HID
+* 
 
