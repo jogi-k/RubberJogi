@@ -18,7 +18,7 @@
 #include <Keyboard.h>
 #include <Mouse.h>
 
-#define VERSION "1.2"
+#define VERSION "1.3"
 #define WITH_SWITCHES
 
 /**
@@ -48,6 +48,7 @@ int switch_1_pin = 2;
 int switch_2_pin = 4;
 int switch_3_pin = 6;
 int switch_4_pin = 8;
+int switch_5_pin = 10;
 #endif
 
 
@@ -72,6 +73,8 @@ void setup() {
     digitalWrite(switch_3_pin, LOW);
     pinMode(switch_4_pin, OUTPUT);
     digitalWrite(switch_4_pin, LOW);
+    pinMode(switch_5_pin, OUTPUT);
+    digitalWrite(switch_5_pin, LOW);
 #endif
 }
 
@@ -167,6 +170,7 @@ bool processLine(String line) {
      *  switch2_on , switch2_off 
      *  switch3_on , switch3_off 
      *  switch4_on , switch4_off 
+     *  switch5_on , switch5_off 
      *  
      * (2) Commands with payload:
      *  - DEFAULT_DELAY <=> DEFAULTDELAY (global commands aren't implemented.)
@@ -242,7 +246,9 @@ bool processLine(String line) {
                     line == "switch3_on" || 
                     line == "switch3_off"  ||
                     line == "switch4_on" || 
-                    line == "switch4_off"  ) {
+                    line == "switch4_off"  ||
+                    line == "switch5_on" || 
+                    line == "switch5_off"  ) {
             command = line;
             mouse = false;
             switches = true;
@@ -373,6 +379,10 @@ void processSwitchCommands( String command ){
         switch_Nr_4( 1 );
     } else if (command == "switch4_off") {
         switch_Nr_4( 0 );
+    } else if (command == "switch5_on") {
+        switch_Nr_5( 1 );
+    } else if (command == "switch5_off") {
+        switch_Nr_5( 0 );
     } else if (command == "boot") {
         switch_reseter( 1500);
     } else if (command == "reboot" ) {
@@ -482,6 +492,14 @@ void switch_reseter(int duration) {
   digitalWrite(switch_1_pin, LOW);
 }
 
+void switch_Nr_5( int low_high )
+{
+    if( low_high )
+        digitalWrite(switch_5_pin, HIGH);
+    else
+        digitalWrite(switch_5_pin, LOW);
+}
+
 void switch_Nr_4( int low_high )
 {
     if( low_high )
@@ -489,6 +507,7 @@ void switch_Nr_4( int low_high )
     else
         digitalWrite(switch_4_pin, LOW);
 }
+
 void switch_Nr_3( int low_high )
 {
     if( low_high )
@@ -496,6 +515,7 @@ void switch_Nr_3( int low_high )
     else
         digitalWrite(switch_3_pin, LOW);
 }
+
 void switch_Nr_2( int low_high )
 {
     if( low_high )
@@ -503,6 +523,7 @@ void switch_Nr_2( int low_high )
     else
         digitalWrite(switch_2_pin, LOW);
 }
+
 void switch_Nr_1( int low_high )
 {
     if( low_high )
