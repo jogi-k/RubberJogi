@@ -5,7 +5,7 @@
 * You want to control a PC from another PC, making keystrokes, eventually mouse-moves.
 * Even when starting up and e.g. entering the BIOS 
 * => ssh etc not an option
-* you need to be independant from any "client" on the controlled machine
+* you need to be independent from any "client" on the controlled machine
 * only solution which comes to mind is : USB HID
 * Therefore you connect from PC I somehow to PC II, on PC II as USB-Keyboard
 
@@ -159,7 +159,6 @@ What do you need to build a RubberJogi?
 
 
 
-
 | Part                                                  | Rubber<br> Jogi<br> Standard | Rubber <br> Jogi<br>Two Switch | Rubber <br> Jogi<br>Four Switch |
 | ----------------------------------------------------- | ---------------------------- | ------------------------------ | ------------------------------- |
 | Arduino Micro                                         | 1                            | 1                              | 1                               |
@@ -179,5 +178,3 @@ What do you need to build a RubberJogi?
 ## Links, Ideas
 
 * Mouse-Support currently missing to 90%, positioning does not work. Maybe move to USB-Touch-Screen could solve the problem? Please have a look at this project, might be worth checking out : https://github.com/NicoHood/HID
-* 
-
