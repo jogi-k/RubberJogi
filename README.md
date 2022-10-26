@@ -129,6 +129,12 @@ In both cases you should see a moving text-cursor on the second PC (best open an
 
     ![RubberJogi_with_switch_schem](pics/RubberJogi_with_4_switches_schem.png)
 
+## Extended Special Hardware with 5 switches and one relay
+
+- finally (in our application) we need to switch power 
+- we introduced a 5th optocoupler, connected to pin10 AND we connected a real relay to that to be able to switch power
+- schematics will follow
+
 ## Reality
 
 This is one sample-prototype without any switches, just the "plain" RubberJogi. This was soldered "flying" and is only stabilized with heat shrink tube.
