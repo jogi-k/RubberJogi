@@ -25,8 +25,8 @@ bool isKeyboardCommand(String cmd) {
          cmd == "FUNCTION6" || cmd == "FUNCTION7" || cmd == "FUNCTION8" ||
          cmd == "FUNCTION9" || cmd == "FUNCTION10" || cmd == "FUNCTION11" ||
          cmd == "FUNCTION12" || cmd == "BACKSPACE" || cmd == "CAPSLOCK" ||
-         cmd == "SCROLLLOCK" || cmd == "NUMLOCK" || cmd == "MENU APP" ||
-         cmd == "PAUSE BREAK" || cmd.startsWith("SHIFT ") ||
+         cmd == "SCROLLLOCK" || cmd == "NUMLOCK" || cmd == "MENU" || cmd == "APP" ||
+         cmd == "PAUSE" || cmd == "BREAK" || cmd.startsWith("SHIFT ") ||
          cmd.startsWith("ALT ") || cmd.startsWith("CTRL ") ||
          cmd.startsWith("CONTROL ") || cmd.startsWith("GUI ") ||
          cmd.startsWith("WINDOWS ") || cmd.startsWith("STRING ");
@@ -53,7 +53,7 @@ uint8_t getKeyCode(const String &key) {
     return key[0];
   } else if (key.equalsIgnoreCase("ENTER")) {
     return KEY_RETURN;
-  } else if (key.equalsIgnoreCase("MENU APP")) {
+  } else if (key.equalsIgnoreCase("MENU") || key.equalsIgnoreCase("APP")) {
     return KEY_MENU;
   } else if (key.equalsIgnoreCase("DOWNARROW") ||
              key.equalsIgnoreCase("DOWN")) {
@@ -66,7 +66,7 @@ uint8_t getKeyCode(const String &key) {
     return KEY_RIGHT_ARROW;
   } else if (key.equalsIgnoreCase("UPARROW") || key.equalsIgnoreCase("UP")) {
     return KEY_UP_ARROW;
-  } else if (key.equalsIgnoreCase("PAUSE BREAK")) {
+  } else if (key.equalsIgnoreCase("PAUSE") || key.equalsIgnoreCase("BREAK")) {
     return KEY_PAUSE;
   } else if (key.equalsIgnoreCase("CAPSLOCK")) {
     return KEY_CAPS_LOCK;
@@ -302,12 +302,6 @@ void RubberJogi::_executeKeyboardCommand(String cmd) const {
     };
 
     while (idx != -1) {
-      // Special handling for key commands that contain a space
-      if (cmd.substring(prevIdx, 8).equalsIgnoreCase("MENU APP") ||
-          cmd.substring(prevIdx, 12).equalsIgnoreCase("PAUSE BREAK")) {
-        idx = cmd.indexOf(' ', idx + 1);
-      }
-
       addKey(cmd.substring(prevIdx, idx));
 
       prevIdx = idx + 1;
