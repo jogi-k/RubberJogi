@@ -25,11 +25,12 @@ bool isKeyboardCommand(String cmd) {
          cmd == "FUNCTION6" || cmd == "FUNCTION7" || cmd == "FUNCTION8" ||
          cmd == "FUNCTION9" || cmd == "FUNCTION10" || cmd == "FUNCTION11" ||
          cmd == "FUNCTION12" || cmd == "BACKSPACE" || cmd == "CAPSLOCK" ||
-         cmd == "SCROLLLOCK" || cmd == "NUMLOCK" || cmd == "MENU" || cmd == "APP" ||
-         cmd == "PAUSE" || cmd == "BREAK" || cmd.startsWith("SHIFT ") ||
-         cmd.startsWith("ALT ") || cmd.startsWith("CTRL ") ||
-         cmd.startsWith("CONTROL ") || cmd.startsWith("GUI ") ||
-         cmd.startsWith("WINDOWS ") || cmd.startsWith("STRING ");
+         cmd == "SCROLLLOCK" || cmd == "NUMLOCK" || cmd == "MENU" ||
+         cmd == "APP" || cmd == "PAUSE" || cmd == "BREAK" ||
+         cmd.startsWith("SHIFT ") || cmd.startsWith("ALT ") ||
+         cmd.startsWith("CTRL ") || cmd.startsWith("CONTROL ") ||
+         cmd.startsWith("GUI ") || cmd.startsWith("WINDOWS ") ||
+         cmd.startsWith("STRING ") || cmd.startsWith("INJECT_MOD ");
 }
 
 bool isMouseCommand(const String &cmd) {
@@ -135,6 +136,23 @@ uint8_t getKeyCode(const String &key) {
 
   return -1;
 }
+
+bool isModifierKey(uint8_t key) {
+  switch (key) {
+  case KEY_LEFT_SHIFT:
+  case KEY_RIGHT_SHIFT:
+  case KEY_LEFT_ALT:
+  case KEY_RIGHT_ALT:
+  case KEY_LEFT_CTRL:
+  case KEY_RIGHT_CTRL:
+  case KEY_LEFT_GUI:
+  case KEY_RIGHT_GUI:
+    return true;
+  default:
+    return false;
+  }
+}
+
 } // namespace
 
 RubberJogi::RubberJogi()
@@ -283,6 +301,15 @@ void RubberJogi::_executeKeyboardCommand(String cmd) const {
 
     for (unsigned int i = 7; i < cmd.length(); ++i) {
       sendKey(cmd[i]);
+    }
+  } else if (cmd.substring(0, 10).equalsIgnoreCase("INJECT_MOD")) {
+    uint8_t keyCode = getKeyCode(cmd.substring(11));
+
+    if (isModifierKey(keyCode)) {
+      Serial1.println(String("Pressing modifier: ") + cmd.substring(11));
+      sendKey(keyCode);
+    } else {
+      Serial1.println(String("Invalid modifier key: ") + cmd.substring(11));
     }
   } else {
     Serial1.println(String("Sending key combination: ") + cmd);
