@@ -27,9 +27,9 @@ bool isKeyboardCommand(String cmd) {
          cmd == "FUNCTION12" || cmd == "BACKSPACE" || cmd == "CAPSLOCK" ||
          cmd == "SCROLLLOCK" || cmd == "NUMLOCK" || cmd == "MENU" ||
          cmd == "APP" || cmd == "PAUSE" || cmd == "BREAK" ||
-         cmd.startsWith("SHIFT ") || cmd.startsWith("ALT ") ||
-         cmd.startsWith("CTRL ") || cmd.startsWith("CONTROL ") ||
-         cmd.startsWith("GUI ") || cmd.startsWith("WINDOWS ") ||
+         cmd.startsWith("SHIFT") || cmd.startsWith("ALT") ||
+         cmd.startsWith("CTRL") || cmd.startsWith("CONTROL") ||
+         cmd.startsWith("GUI") || cmd.startsWith("WINDOWS") ||
          cmd.startsWith("STRING ") || cmd.startsWith("INJECT_MOD ");
 }
 
@@ -313,6 +313,10 @@ void RubberJogi::_executeKeyboardCommand(String cmd) const {
     }
   } else {
     Serial1.println(String("Sending key combination: ") + cmd);
+
+    if (uint8_t key = getKeyCode(cmd); isModifierKey(key)) {
+      Serial1.println(String("Using modifier keys as standalone command is deprecated. Instead use: INJECT_MOD ") + cmd);
+    }
 
     KeyReport report;
     int prevIdx = 0;
